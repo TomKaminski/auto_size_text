@@ -1,4 +1,5 @@
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
+import 'package:demo/selectable_rich_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -118,7 +119,7 @@ class _DemoAppState extends State<DemoApp> {
             activeColor: colors[1],
           ),
           BottomNavyBarItem(
-            icon: Icon(Icons.sync, size: 26),
+            icon: Icon(Icons.rice_bowl, size: 26),
             title: Text('group'),
             activeColor: colors[2],
           ),
@@ -144,7 +145,7 @@ class _DemoAppState extends State<DemoApp> {
       case 1:
         return MinFontSizeDemo(_richText);
       case 2:
-        return SyncDemo(_richText);
+        return SelectableRichTextDemo(_richText);
       case 3:
         return StepGranularityDemo(_richText);
       default:

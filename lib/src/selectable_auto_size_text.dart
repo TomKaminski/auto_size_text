@@ -10,6 +10,7 @@ class SelectableAutoSizeText extends StatelessWidget {
     Key? key,
     this.focusNode,
     this.style,
+    this.overflow,
     this.strutStyle,
     this.textAlign,
     this.textDirection,
@@ -33,6 +34,14 @@ class SelectableAutoSizeText extends StatelessWidget {
     this.textHeightBehavior,
     this.textWidthBasis,
     this.onSelectionChanged,
+    this.wrapWords,
+    this.overflowReplacement,
+    this.overflowCallback,
+    this.minFontSize,
+    this.maxFontSize,
+    this.stepGranularity,
+    this.presetFontSizes,
+    this.locale,
   })  : textSpan = null,
         super(key: key);
 
@@ -41,6 +50,7 @@ class SelectableAutoSizeText extends StatelessWidget {
     Key? key,
     this.focusNode,
     this.style,
+    this.overflow,
     this.strutStyle,
     this.textAlign,
     this.textDirection,
@@ -64,6 +74,14 @@ class SelectableAutoSizeText extends StatelessWidget {
     this.textHeightBehavior,
     this.textWidthBasis,
     this.onSelectionChanged,
+    this.wrapWords,
+    this.overflowReplacement,
+    this.overflowCallback,
+    this.minFontSize,
+    this.maxFontSize,
+    this.stepGranularity,
+    this.presetFontSizes,
+    this.locale,
   })  : data = null,
         super(key: key);
 
@@ -109,6 +127,14 @@ class SelectableAutoSizeText extends StatelessWidget {
   ///
   /// If null, defaults [DefaultTextStyle] of context.
   final TextStyle? style;
+
+  /// {@template auto_size_text.overflow}
+  /// How visual overflow should be handled.
+  ///
+  /// Defaults to retrieving the value from the nearest [DefaultTextStyle] ancestor.
+  /// If there is no ancestor, [TextOverflow.clip] is used.
+  /// {@endtemplate}
+  final TextOverflow? overflow;
 
   /// {@macro flutter.widgets.editableText.strutStyle}
   final StrutStyle? strutStyle;
@@ -206,19 +232,85 @@ class SelectableAutoSizeText extends StatelessWidget {
   /// {@macro flutter.widgets.editableText.onSelectionChanged}
   final SelectionChangedCallback? onSelectionChanged;
 
+  /// {@template auto_size_text.wrapWords}
+  /// Whether words which don't fit in one line should be wrapped.
+  ///
+  /// If false, the fontSize is lowered as far as possible until all words fit
+  /// into a single line.
+  /// {@endtemplate}
+  final bool? wrapWords;
+
+  /// {@template auto_size_text.overflowReplacement}
+  /// If the text is overflowing and does not fit its bounds, this widget is
+  /// displayed instead.
+  /// {@endtemplate}
+  final Widget? overflowReplacement;
+
+  /// {@template auto_size_text.onOverflow}
+  /// Called when the text overflows its container.
+  /// {@endtemplate}
+  final Function(bool overflow)? overflowCallback;
+
+  /// {@template auto_size_text.minFontSize}
+  /// The minimum text size constraint to be used when auto-sizing text.
+  ///
+  /// Is being ignored if [presetFontSizes] is set.
+  /// {@endtemplate}
+  final double? minFontSize;
+
+  /// {@template auto_size_text.maxFontSize}
+  /// The maximum text size constraint to be used when auto-sizing text.
+  ///
+  /// Is being ignored if [presetFontSizes] is set.
+  /// {@endtemplate}
+  final double? maxFontSize;
+
+  /// {@template auto_size_text.stepGranularity}
+  /// The step size in which the font size is being adapted to constraints.
+  ///
+  /// The Text scales uniformly in a range between [minFontSize] and
+  /// [maxFontSize].
+  /// Each increment occurs as per the step size set in stepGranularity.
+  ///
+  /// Most of the time you don't want a stepGranularity below 1.0.
+  ///
+  /// Is being ignored if [presetFontSizes] is set.
+  /// {@endtemplate}
+  final double? stepGranularity;
+
+  /// {@template auto_size_text.presetFontSizes}
+  /// Predefines all the possible font sizes.
+  ///
+  /// **Important:** PresetFontSizes have to be in descending order.
+  /// {@endtemplate}
+  final List<double>? presetFontSizes;
+
+  /// {@template auto_size_text.locale}
+  /// Used to select a font when the same Unicode character can
+  /// be rendered differently, depending on the locale.
+  ///
+  /// It's rarely necessary to set this property. By default its value
+  /// is inherited from the enclosing app with `Localizations.localeOf(context)`.
+  ///
+  /// See [RenderParagraph.locale] for more information.
+  /// {@endtemplate}
+  final Locale? locale;
+
   @override
   Widget build(BuildContext context) {
     final span = textSpan ?? TextSpan(text: data);
     return AutoSizeBuilder(
       text: span,
+      style: style,
       builder: (context, scale, overflow) {
+        overflowCallback?.call(overflow);
         return SelectableText.rich(
           span,
           style: style,
           strutStyle: strutStyle,
           textAlign: textAlign,
           textDirection: textDirection,
-          textScaleFactor: textScaleFactor,
+          textScaleFactor: scale,
           autofocus: autofocus,
           minLines: minLines,
           maxLines: maxLines,
@@ -239,6 +331,20 @@ class SelectableAutoSizeText extends StatelessWidget {
           onTap: onTap,
         );
       },
+      strutStyle: strutStyle,
+      minFontSize: minFontSize,
+      maxFontSize: maxFontSize,
+      stepGranularity: stepGranularity,
+      presetFontSizes: presetFontSizes,
+      textAlign: textAlign,
+      textDirection: textDirection,
+      locale: locale,
+      wrapWords: wrapWords,
+      overflowReplacement: overflowReplacement,
+      textScaleFactor: textScaleFactor,
+      maxLines: maxLines,
+      textWidthBasis: textWidthBasis,
+      textHeightBehavior: textHeightBehavior,
     );
   }
 }
