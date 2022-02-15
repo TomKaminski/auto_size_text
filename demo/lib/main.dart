@@ -5,7 +5,6 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 
 import 'max_lines_demo.dart';
 import 'min_font_size_demo.dart';
-import 'overflow_replacement_demo.dart';
 import 'preset_font_sizes_demo.dart';
 import 'step_granularity.dart';
 import 'sync_demo.dart';
@@ -133,11 +132,6 @@ class _DemoAppState extends State<DemoApp> {
             title: Text('preset'),
             activeColor: colors[4],
           ),
-          BottomNavyBarItem(
-            icon: Icon(MdiIcons.stackOverflow),
-            title: Text('replacement'),
-            activeColor: colors[5],
-          ),
         ],
       ),
     );
@@ -153,10 +147,8 @@ class _DemoAppState extends State<DemoApp> {
         return SyncDemo(_richText);
       case 3:
         return StepGranularityDemo(_richText);
-      case 4:
-        return PresetFontSizesDemo(_richText);
       default:
-        return OverflowReplacementDemo(_richText);
+        return PresetFontSizesDemo(_richText);
     }
   }
 }
